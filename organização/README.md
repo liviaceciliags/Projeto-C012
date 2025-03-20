@@ -184,3 +184,29 @@
    - Novos clientes são bloqueados, mas os existentes finalizam seus ciclos.
 
 ---
+
+## **Estrutura de Pastas e Arquivos**
+
+```
+restaurante/
+├── core/                    # Classes principais (threads e controladora)
+│   ├── __init__.py
+│   ├── restaurante.py       # Classe Restaurante (Controladora)
+│   ├── cliente.py           # Classe Cliente (Thread)
+│   ├── garcom.py            # Classe Garçom (Thread)
+│   ├── chef.py              # Classe Chef (Thread)
+│   └── caixa.py             # Classe Caixa (Thread)
+│
+├── models/                  # Classes de dados e configuração
+│   ├── __init__.py
+│   ├── pedido.py            # Classe Pedido
+│   ├── mesa.py              # Classe Mesa
+│   ├── configuracao.py      # Classe ConfiguracaoRestaurante (parâmetros)
+│   └── evento.py            # Classe EventoRestaurante (logs)
+│
+├── utils/                   # Utilitários e estruturas thread-safe
+│   ├── __init__.py
+│   └── filas.py             # Implementação de Filas (FilaPedidos e FilaClientes)
+│
+└── main.py                  # Script principal para iniciar a simulação
+```
