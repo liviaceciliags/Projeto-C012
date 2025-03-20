@@ -1,13 +1,13 @@
 <mxfile host="65bd71144e">
     <diagram id="iq6wSfX1vZ1Lp_2pqSdi" name="Classes">
-        <mxGraphModel dx="2605" dy="1187" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+        <mxGraphModel dx="718" dy="989" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="157" value="Classes de Suporte" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                <mxCell id="157" value="Classes de Suporte" style="rounded=0;whiteSpace=wrap;html=1;fillColor=default;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;verticalAlign=top;spacing=8;" parent="1" vertex="1">
                     <mxGeometry x="75" y="410" width="590" height="390" as="geometry"/>
                 </mxCell>
-                <mxCell id="81" value="Classes Principais" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                <mxCell id="81" value="Classes Principais" style="rounded=0;whiteSpace=wrap;html=1;fillColor=default;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;verticalAlign=top;spacing=8;" parent="1" vertex="1">
                     <mxGeometry x="40" y="40" width="660" height="350" as="geometry"/>
                 </mxCell>
                 <mxCell id="15" value="&lt;b&gt;Restaurante&lt;/b&gt;&lt;br&gt;(Classe Controladora)" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;whiteSpace=wrap;" parent="1" vertex="1">
