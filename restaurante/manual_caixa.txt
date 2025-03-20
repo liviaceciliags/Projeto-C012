@@ -1,0 +1,3 @@
+O caixa vai consistir em uma thread responsável por fazer a cobrança da conta após o cliente finalizar sua refeição.
+Dessa forma, após ser feito o pagamento do cliente, o caixa liberará a mesa para que mais clientes possam ir ao restaurante.
+Além disso, será feito um relatório do lucro obtido para que se possa ter uma ideia de como é o estado financeiro do local.
