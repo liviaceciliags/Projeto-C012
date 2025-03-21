@@ -30,12 +30,13 @@ class ConfiguracaoRestaurante:
         self.tempoProcessamentoCaixa = tempoProcessamentoCaixa
         self.tempoFuncionamento = tempoFuncionamento
 
-    def __repr__(self) -> str:
-        """Representação oficial do objeto para debug."""
+    def __repr__(self):
         return (
             f"ConfiguracaoRestaurante("
             f"mesas={self.numeroMesas}, "
             f"prob_clientes={self.probabilidadeChegadaCliente}, "
             f"t_preparo={self.tempoPreparoPedido}s, "
-            f"t_comer={self.tempoComerCliente}s)"
+            f"t_comer={self.tempoComerCliente}s, "
+            f"t_caixa={self.tempoProcessamentoCaixa}s, "
+            f"t_total={self.tempoFuncionamento}s)"
         )
