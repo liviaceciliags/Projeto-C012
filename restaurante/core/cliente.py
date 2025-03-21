@@ -5,9 +5,10 @@ import time
 from restaurante.models.pedido import Pedido, EstadoPedido
 
 class Cliente(threading.Thread):
-    def __init__(self, id: int, fila_chamados, fila_caixa):
+    def __init__(self, id: int, fila_chamados, fila_caixa, config):
         super().__init__()
         self.id = id
+        self.config = config
         self.fila_chamados = fila_chamados
         self.fila_caixa = fila_caixa
         self.pedido = None
@@ -46,7 +47,7 @@ class Cliente(threading.Thread):
     def comer(self):
         self.estado = "COMENDO"
         print(f"🍽️ [Cliente {self.id}] está comendo")
-        time.sleep(0.5)
+        time.sleep(self.config.tempoComerCliente)
 
     def sair(self):
     # Antes de sair, vai para o caixa

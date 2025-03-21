@@ -5,9 +5,10 @@ import time
 from restaurante.models.pedido import EstadoPedido
 
 class Chef(threading.Thread):
-    def __init__(self, id: int, fila_pedidos, fila_prontos):
+    def __init__(self, id: int, fila_pedidos, fila_prontos, config):
         super().__init__(daemon=True)
         self.id = id
+        self.config = config
         self.estado = "DISPONÍVEL"
         self.fila_pedidos = fila_pedidos
         self.fila_prontos = fila_prontos
@@ -26,11 +27,11 @@ class Chef(threading.Thread):
         pedido.estado = EstadoPedido.EM_PREPARO
         print(f"👨‍🍳 [Chef {self.id}] Preparando pedido {pedido.id}")
         
-        # Simula tempo de preparo (2 segundos)
-        time.sleep(2)
+        # Simula tempo de preparo
+        time.sleep(self.config.tempoPreparoPedido)
         
         pedido.estado = EstadoPedido.PRONTO
-        self.fila_prontos.adicionar_pedido_pronto(pedido)  # Garante a adição na fila
+        self.fila_prontos.adicionar_pedido_pronto(pedido)
         print(f"✅ [Chef {self.id}] Pedido {pedido.id} pronto")
         self.estado = "DISPONÍVEL"
 

@@ -20,7 +20,6 @@ class Garcon(threading.Thread):
             try:
                 self._processar_solicitacoes()
                 self._entregar_pedidos_prontos()
-                time.sleep(0.1)  # Reduz consumo de CPU
             except Exception as e:
                 print(f"Erro no Garçom {self.id}: {str(e)}")
 
