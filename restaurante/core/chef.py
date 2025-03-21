@@ -23,15 +23,15 @@ class Chef(threading.Thread):
 
     def _preparar_pedido(self, pedido):
         self.estado = "PREPARANDO"
-        print(f"👨‍🍳 [Chef {self.id}] Preparando pedido {pedido.id}")
         pedido.estado = EstadoPedido.EM_PREPARO
+        print(f"👨‍🍳 [Chef {self.id}] Preparando pedido {pedido.id}")
         
         # Simula tempo de preparo (2 segundos)
         time.sleep(2)
         
         pedido.estado = EstadoPedido.PRONTO
-        self.fila_prontos.adicionar_pedido_pronto(pedido)
-        print(f"👨‍🍳 [Chef {self.id}] Finalizou o pedido {pedido.id}")
+        self.fila_prontos.adicionar_pedido_pronto(pedido)  # Garante a adição na fila
+        print(f"✅ [Chef {self.id}] Pedido {pedido.id} pronto")
         self.estado = "DISPONÍVEL"
 
     def parar(self):
