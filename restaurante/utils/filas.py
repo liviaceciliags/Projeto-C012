@@ -53,3 +53,19 @@ class FilaChamados:
     
     def obter_proximo_chamado(self):
         return self._fila.get()
+    
+class FilaCaixa:
+    def __init__(self):
+        self._fila = queue.Queue()
+    
+    def adicionar_cliente(self, cliente):
+        self._fila.put(cliente)
+    
+    def proximo_cliente(self):
+        return self._fila.get()
+    
+    def esta_vazia(self):
+        return self._fila.empty()
+    
+    def tamanho(self):
+        return self._fila.qsize()

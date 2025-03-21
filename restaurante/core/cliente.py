@@ -5,10 +5,11 @@ import time
 from restaurante.models.pedido import Pedido, EstadoPedido
 
 class Cliente(threading.Thread):
-    def __init__(self, id: int, fila_chamados):
+    def __init__(self, id: int, fila_chamados, fila_caixa):
         super().__init__()
         self.id = id
         self.fila_chamados = fila_chamados
+        self.fila_caixa = fila_caixa
         self.pedido = None
         self.estado = "AGUARDANDO_MESA"
         self._pedido_recebido = threading.Event()
@@ -48,5 +49,15 @@ class Cliente(threading.Thread):
         time.sleep(0.5)
 
     def sair(self):
+    # Antes de sair, vai para o caixa
+        self.estado = "PAGANDO"
+        print(f"🏦 Cliente {self.id} entrou na fila do caixa")
+        self.fila_caixa.adicionar_cliente(self)
+        
+        # Aguarda processamento do caixa
+        while self.estado != "SAINDO":
+            time.sleep(0.1)
+            
+    def processar_pagamento(self):
         self.estado = "SAINDO"
-        print(f"👋 [Cliente {self.id}] saiu após comer")
+        print(f"👋 Cliente {self.id} saiu do restaurante")
