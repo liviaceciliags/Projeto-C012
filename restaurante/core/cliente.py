@@ -7,19 +7,21 @@ from restaurante.models.pedido import Pedido, EstadoPedido
 class Cliente(threading.Thread):
     """
     Classe que representa um Cliente em um restaurante virtual.
-    Controla todo o ciclo do cliente desde a entrada até a saída do estabelecimento.
+    Gerencia todo o ciclo desde a entrada até a saída do estabelecimento.
     
     Atributos:
-        id (int): Identificador único do cliente
+        id (int): Identificador único
+        restaurante (Restaurante): Referência ao restaurante
         config (object): Configurações do sistema
-        fila_chamados: Fila para solicitar atendimento dos garçons
-        fila_caixa: Fila para pagamento final
+        fila_chamados (FilaChamados): Fila para solicitar atendimento
+        fila_caixa (FilaCaixa): Fila para processar pagamentos
         pedido (Pedido): Pedido realizado pelo cliente
-        estado (str): Estado atual do cliente (AGUARDANDO_MESA/CHAMANDO_GARCOM/COMENDO/PAGANDO/SAINDO)
+        estado (str): Estado atual (NA_FILA_ESPERA/CHAMANDO_GARCOM/COMENDO/PAGANDO/SAINDO)
+        mesa (Mesa): Mesa ocupada pelo cliente
         _pedido_recebido (threading.Event): Sinalização de recebimento do pedido
     """
     
-    def __init__(self, id: int, fila_chamados, fila_caixa, config):
+    def __init__(self, id: int, restaurante, fila_chamados, fila_caixa, config):
         """
         Inicializa o cliente com suas configurações básicas
         
@@ -31,11 +33,13 @@ class Cliente(threading.Thread):
         """
         super().__init__()
         self.id = id
+        self.restaurante = restaurante
         self.config = config
         self.fila_chamados = fila_chamados
         self.fila_caixa = fila_caixa
         self.pedido = None
-        self.estado = "AGUARDANDO_MESA"
+        self.estado = "NA_FILA_ESPERA"
+        self.mesa = None
         self._pedido_recebido = threading.Event()
 
     def run(self):
@@ -47,8 +51,13 @@ class Cliente(threading.Thread):
         4. Come o pedido
         5. Vai para o caixa pagar
         """
-        self.estado = "CHAMANDO_GARCOM"
-        self.chamar_garcom()
+        
+        # Entra na fila de espera
+        self.restaurante.adicionar_cliente(self)
+        
+        # Aguarda mesa ser atribuída pelo restaurante
+        while self.estado == "NA_FILA_ESPERA":
+            time.sleep(0.1)
         
         # Aguarda confirmação de que o pedido foi recebido pelo garçom
         self._pedido_recebido.wait()
@@ -59,6 +68,18 @@ class Cliente(threading.Thread):
         
         self.comer()
         self.sair()
+        
+    def iniciar_atendimento(self, mesa):
+        """
+        Inicia o atendimento do cliente quando uma mesa é alocada.
+        Chamado automaticamente pelo Restaurante.
+        
+        Args:
+            mesa (Mesa): Objeto Mesa atribuído ao cliente
+        """
+        self.mesa = mesa  # Marca que está com mesa
+        self.estado = "CHAMANDO_GARCOM"
+        self.chamar_garcom()
 
     def chamar_garcom(self):
         """
@@ -96,6 +117,7 @@ class Cliente(threading.Thread):
         1. Entra na fila do caixa
         2. Aguarda processamento do pagamento
         """
+        self.restaurante.liberar_mesa(self.mesa)
         self.estado = "PAGANDO"
         print(f"🏦 Cliente {self.id} entrou na fila do caixa")
         self.fila_caixa.adicionar_cliente(self)
