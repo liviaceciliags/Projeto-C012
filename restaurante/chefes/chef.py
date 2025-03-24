@@ -44,14 +44,14 @@ class Chef(threading.Thread):
         2. Prepara o pedido (simula o tempo de preparo).
         3. Coloca o pedido pronto na fila de prontos.
         """
-        print(f"👨‍🍳 [Chef {self.id}] Iniciou o trabalho.")
+        print(f"[Chef {self.id}] Iniciou o trabalho.")
         while self._ativo:
             try:
                 # Tenta pegar um pedido pendente
                 pedido = self.fila_pedidos.obter_proximo_pedido()
                 self.estado = "PREPARANDO"
 
-                print(f"👨‍🍳 [Chef {self.id}] Preparando pedido {pedido.id} do Cliente {pedido.id_cliente}")
+                print(f"[Chef {self.id}] Preparando pedido {pedido.id} do Cliente {pedido.id_cliente}")
 
                 # Atualiza estado do pedido
                 pedido.estado = EstadoPedido.EM_PREPARO
@@ -63,7 +63,7 @@ class Chef(threading.Thread):
                 pedido.estado = EstadoPedido.PRONTO
                 pedido.timestampPronto = time.time()
 
-                print(f"✅ [Chef {self.id}] Pedido {pedido.id} do Cliente {pedido.id_cliente} está pronto!")
+                print(f"[Chef {self.id}] Pedido {pedido.id} do Cliente {pedido.id_cliente} está pronto!")
 
                 # Coloca o pedido na fila de prontos
                 self.fila_prontos.adicionar_pedido_pronto(pedido)
@@ -75,12 +75,12 @@ class Chef(threading.Thread):
                 time.sleep(0.1)
 
             except Exception as e:
-                print(f"⚠️ [Chef {self.id}] Erro durante preparo: {str(e)}")
+                print(f"[Chef {self.id}] Erro durante preparo: {str(e)}")
                 time.sleep(0.1)
 
     def parar(self):
         """
         Encerra a execução da thread de forma segura.
         """
-        print(f"👨‍🍳 [Chef {self.id}] Encerrando o expediente.")
+        print(f"[Chef {self.id}] Encerrando o expediente.")
         self._ativo = False
