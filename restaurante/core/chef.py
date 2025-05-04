@@ -60,6 +60,7 @@ class Chef(threading.Thread):
         """
         self.estado = "PREPARANDO"
         pedido.estado = EstadoPedido.EM_PREPARO
+        print(f"📊 [Chef {self.id}] Pegou pedido {pedido.id} com complexidade total {sum(pedido.complexidades)} (SJF)")
         print(f"👨‍🍳 [Chef {self.id}] Preparando pedido {pedido.id}")
         
         # Simula o tempo de preparo usando o valor da configuração

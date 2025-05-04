@@ -8,6 +8,7 @@ from restaurante.models.configuracao import ConfiguracaoRestaurante
 from restaurante.utils.filas import FilaPedidos, FilaPedidosProntos, FilaChamados, FilaCaixa
 
 def main():
+    #Alterar o tempo de preparo de cada cliente
     # Configuração
     config = ConfiguracaoRestaurante(
         numeroMesas=5,
@@ -48,7 +49,7 @@ def main():
     # Criação de clientes
     clientes = [
         Cliente(i, restaurante, fila_chamados, fila_caixa, config) 
-        for i in range(1, 51)
+        for i in range(1, 5)
         ]
     
     # Inicia threads
@@ -60,7 +61,6 @@ def main():
 
     # Monitoramento
     for cl in clientes: cl.join()  # Aguarda término de todos clientes
-    
     
     # Encerra threads
     for c in chefs: c.parar()
