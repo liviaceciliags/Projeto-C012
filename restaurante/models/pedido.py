@@ -10,10 +10,11 @@ class EstadoPedido(Enum):
     ENTREGUE = "ENTREGUE"
 
 class Pedido:
-    def __init__(self, id: int, id_cliente: int, itens: list):
+    def __init__(self, id: int, id_cliente: int, itens: list, complexidades: list = None):
         self.id = id
         self.id_cliente = id_cliente
         self.itens = itens
+        self.complexidades = complexidades or []
         self.estado = EstadoPedido.PENDENTE
 
     def __repr__(self):

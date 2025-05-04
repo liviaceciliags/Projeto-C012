@@ -1,35 +1,27 @@
 # utils/filas.py
 
 import queue
+import time
+import threading
 
 class FilaPedidos:
-    """
-    Fila thread-safe para gerenciar pedidos pendentes de preparo na cozinha.
-    
-    Atributos:
-        _fila (queue.Queue): Fila interna para armazenamento dos pedidos
-    """
-    
     def __init__(self):
-        self._fila = queue.Queue()
+        self._fila = []
+        self._lock = threading.Lock()  # <- adicionado lock
 
     def adicionar_pedido(self, pedido):
-        """
-        Adiciona um novo pedido à fila de preparo
-        
-        Args:
-            pedido: Objeto Pedido a ser processado
-        """
-        self._fila.put(pedido)
+        with self._lock:
+            self._fila.append(pedido)
 
     def obter_proximo_pedido(self):
-        """
-        Remove e retorna o próximo pedido da fila (bloqueante)
-        
-        Returns:
-            Pedido: Próximo pedido a ser preparado
-        """
-        return self._fila.get()
+        while True:
+            with self._lock:
+                if self._fila:
+                    # Pega o pedido de menor complexidade
+                    pedido_menor_complexidade = min(self._fila, key=lambda p: sum(p.complexidades))
+                    self._fila.remove(pedido_menor_complexidade)
+                    return pedido_menor_complexidade
+            time.sleep(0.05)  # Espera um pouco se a fila estiver vazia
 
 class FilaPedidosProntos:
     """

@@ -3,6 +3,7 @@
 import threading
 import time
 from restaurante.models.pedido import Pedido, EstadoPedido
+import random
 
 class Cliente(threading.Thread):
     """
@@ -89,18 +90,17 @@ class Cliente(threading.Thread):
         self.fila_chamados.adicionar_chamado(self)
 
     def fazer_pedido(self):
-        """
-        Cria o pedido do cliente e notifica o sistema
-        
-        Returns:
-            Pedido: Objeto pedido criado com os itens solicitados
-        """
+        quantidade_itens = random.randint(1, 5)
+        itens = [f"Prato {self.id}-{i}" for i in range(quantidade_itens)]
+        complexidades = [random.randint(1, 10) for _ in range(quantidade_itens)]
+
         self.pedido = Pedido(
             id=self.id,
             id_cliente=self.id,
-            itens=[f"Prato {self.id}"]
+            itens=itens,
+            complexidades=complexidades
         )
-        self._pedido_recebido.set()  # Libera a espera do cliente
+        self._pedido_recebido.set()
         return self.pedido
 
     def comer(self):
