@@ -18,7 +18,7 @@ class Garcon(threading.Thread):
         _ativo (bool): Flag para controle da execução da thread
     """
     
-    def __init__(self, id: int, fila_chamados, fila_pedidos, fila_prontos):
+    def __init__(self, id: int, fila_chamados, fila_pedidos, fila_prontos, semaforo_entrega):
         """
         Inicializa o garçom com suas filas de trabalho
         
@@ -27,6 +27,7 @@ class Garcon(threading.Thread):
             fila_chamados: Fila de chamados de clientes
             fila_pedidos: Fila onde são colocados os pedidos para preparo
             fila_prontos: Fila de onde são retirados os pedidos prontos
+            semaforo_entrega: Semáforo para controle de entrega de pedidos
         """
         super().__init__(daemon=True)
         self.id = id
@@ -35,6 +36,7 @@ class Garcon(threading.Thread):
         self.fila_pedidos = fila_pedidos
         self.fila_prontos = fila_prontos
         self._ativo = True
+        self.semaforo_entrega = semaforo_entrega 
 
     def run(self):
         """
@@ -65,7 +67,7 @@ class Garcon(threading.Thread):
             # Interação com o cliente para obter o pedido
             pedido = cliente.fazer_pedido()
             print(f"🧾 [Garçom {self.id}] Pedido {pedido.id} com complexidade total {sum(pedido.complexidades)}")
-            #print(f"📝 [Garçom {self.id}] Anotou pedido {pedido.id}")
+            # print(f"📝 [Garçom {self.id}] Anotou pedido {pedido.id}")
             self.fila_pedidos.adicionar_pedido(pedido)
             
             self.estado = "DISPONÍVEL"
@@ -80,6 +82,7 @@ class Garcon(threading.Thread):
         3. Notifica entrega ao cliente
         """
         try:
+            self.semaforo_entrega.acquire()  # Aguarda liberação do semáforo para entrega
             pedido = self.fila_prontos.obter_proximo_pedido_pronto()
             self.estado = "ENTREGANDO"
             
@@ -92,7 +95,9 @@ class Garcon(threading.Thread):
             pass  # Ignora se não houver pedidos prontos
         except Exception as e:
             print(f"Erro na entrega: {str(e)}")
-
+        finally:
+            self.semaforo_entrega.release() # Libera o semáforo para o próximo garçom
+    
     def parar(self):
         """
         Encerra a execução do garçom de forma segura

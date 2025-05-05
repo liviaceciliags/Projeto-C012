@@ -1,4 +1,5 @@
 import time
+import threading
 from restaurante.core.restaurante import Restaurante
 from restaurante.core.chef import Chef
 from restaurante.core.garcom import Garcon
@@ -8,7 +9,6 @@ from restaurante.models.configuracao import ConfiguracaoRestaurante
 from restaurante.utils.filas import FilaPedidos, FilaPedidosProntos, FilaChamados, FilaCaixa
 
 def main():
-    #Alterar o tempo de preparo de cada cliente
     # Configuração
     config = ConfiguracaoRestaurante(
         numeroMesas=5,
@@ -21,6 +21,9 @@ def main():
     )
     print(f"🏨 Iniciando Restaurante com Configuração: {config}\n")
     
+    # 1 garçom entregando por vez
+    semaforo_entrega = threading.Semaphore(1) 
+
     # Criação das filas compartilhadas
     fila_chamados = FilaChamados()
     fila_pedidos = FilaPedidos()
@@ -37,9 +40,9 @@ def main():
         ]
     
     garcons = [
-        Garcon(i, fila_chamados, fila_pedidos, fila_prontos) 
+        Garcon(i, fila_chamados, fila_pedidos, fila_prontos, semaforo_entrega)
         for i in range(1, config.numeroGarcons + 1)
-        ]
+    ]
     
     caixa = [
         Caixa(i, fila_caixa, config) 
@@ -49,7 +52,7 @@ def main():
     # Criação de clientes
     clientes = [
         Cliente(i, restaurante, fila_chamados, fila_caixa, config) 
-        for i in range(1, 5)
+        for i in range(1, 51)
         ]
     
     # Inicia threads
@@ -61,6 +64,7 @@ def main():
 
     # Monitoramento
     for cl in clientes: cl.join()  # Aguarda término de todos clientes
+    
     
     # Encerra threads
     for c in chefs: c.parar()
