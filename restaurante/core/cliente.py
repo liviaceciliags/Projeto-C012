@@ -67,7 +67,7 @@ class Cliente(threading.Thread):
         while self.pedido.estado != EstadoPedido.ENTREGUE:
             time.sleep(0.1)
         
-        self.comer()
+        self.comer(self.pedido)
         self.sair()
         
     def iniciar_atendimento(self, mesa):
@@ -103,13 +103,13 @@ class Cliente(threading.Thread):
         self._pedido_recebido.set()
         return self.pedido
 
-    def comer(self):
+    def comer(self, pedido):
         """
         Simula o tempo que o cliente leva para comer seu pedido
         """
         self.estado = "COMENDO"
         print(f"🍽️ [Cliente {self.id}] está comendo")
-        time.sleep(self.config.tempoComerCliente)
+        time.sleep(sum(pedido.complexidades) * self.config.tempoComerCliente)
 
     def sair(self):
         """

@@ -15,6 +15,7 @@ class ConfiguracaoRestaurante:
         tempoComerCliente (float): Tempo médio que cliente leva para comer em segundos
         tempoProcessamentoPagamento (float): Tempo médio para processar um pagamento em segundos
         tempoFuncionamento (int): Tempo total de operação do restaurante em segundos
+        fogoes (int): Número de fogões disponíveis na cozinha
     """
     
     def __init__(
@@ -27,7 +28,8 @@ class ConfiguracaoRestaurante:
         tempoPreparoPedido: float = 2,
         tempoComerCliente: float = 0.5,
         tempoProcessamentoPagamento: float = 0.1,
-        tempoFuncionamento: int = 15
+        tempoFuncionamento: int = 15,
+        fogoes: int = 1
     ):
         """
         Inicializa a configuração com valores padrão ou customizados.
@@ -42,6 +44,7 @@ class ConfiguracaoRestaurante:
             tempoComerCliente: Duração da refeição em segundos (padrão: 0.5)
             tempoProcessamentoPagamento: Eficiência do caixa em segundos (padrão: 0.1)
             tempoFuncionamento: Duração da simulação em segundos (padrão: 15)
+            fogoes: Número de fogões disponíveis na cozinha (padrão: 1)
         """
         self.numeroMesas = numeroMesas
         self.numeroGarcons = numeroGarcons
@@ -52,6 +55,7 @@ class ConfiguracaoRestaurante:
         self.tempoComerCliente = tempoComerCliente
         self.tempoProcessamentoPagamento = tempoProcessamentoPagamento
         self.tempoFuncionamento = tempoFuncionamento
+        self.fogoes = fogoes
 
     def __repr__(self):
         """
@@ -70,5 +74,6 @@ class ConfiguracaoRestaurante:
             f"t_preparo={self.tempoPreparoPedido}s, "
             f"t_comer={self.tempoComerCliente}s, "
             f"t_caixa={self.tempoProcessamentoPagamento}s, "
-            f"t_total={self.tempoFuncionamento}s)"
+            f"t_total={self.tempoFuncionamento}s, "
+            f"fogoes={self.fogoes})"
         )
