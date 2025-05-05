@@ -1,6 +1,7 @@
 import time
 import threading
 from restaurante.core.restaurante import Restaurante
+from restaurante.models.fogao import Fogao
 from restaurante.core.chef import Chef
 from restaurante.core.garcom import Garcon
 from restaurante.core.cliente import Cliente
@@ -11,13 +12,14 @@ from restaurante.utils.filas import FilaPedidos, FilaPedidosProntos, FilaChamado
 def main():
     # Configuração
     config = ConfiguracaoRestaurante(
-        numeroMesas=3,
-        numeroGarcons=2,
-        numeroChefs=2,
-        numeroCaixas=1,
+        numeroMesas=5,
+        numeroGarcons=3,
+        numeroChefs=3,
+        numeroCaixas=2,
         tempoPreparoPedido=0.1,
         tempoComerCliente=0.05,
-        tempoProcessamentoPagamento=0.05
+        tempoProcessamentoPagamento=0.05,
+        fogoes=2
     )
     print(f"🏨 Iniciando Restaurante com Configuração: {config}\n")
     
@@ -33,9 +35,14 @@ def main():
     # Inicializa o restaurante com capacidade de gerenciar mesas
     restaurante = Restaurante(config)
     
+    fogoes = [
+        Fogao(i)
+        for i in range(1, config.fogoes + 1)
+    ]
+    
     # Cria funcionários
     chefs = [
-        Chef(i, fila_pedidos, fila_prontos, config) 
+        Chef(i, fila_pedidos, fila_prontos, fogoes, config) 
         for i in range(1, config.numeroChefs + 1)
         ]
     
@@ -52,7 +59,7 @@ def main():
     # Criação de clientes
     clientes = [
         Cliente(i, restaurante, fila_chamados, fila_caixa, config) 
-        for i in range(1, 6)
+        for i in range(1, 11)
         ]
     
     # Inicia threads
