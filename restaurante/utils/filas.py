@@ -9,17 +9,19 @@ class FilaPedidos:
         self._fila = []
         self._lock = threading.Lock()  # <- adicionado lock
 
-    def adicionar_pedido(self, pedido):
+    def adicionar_pedido(self, pedido, garcom):
         with self._lock:
             self._fila.append(pedido)
+            print(f"🧾 [Garçom {garcom.id}] Anotou pedido {pedido.id} com complexidade total {sum(pedido.complexidades)}")
 
-    def obter_proximo_pedido(self):
+    def obter_proximo_pedido(self, chef):
         while True:
             with self._lock:
                 if self._fila:
                     # Pega o pedido de menor complexidade
                     pedido_menor_complexidade = min(self._fila, key=lambda p: sum(p.complexidades))
                     self._fila.remove(pedido_menor_complexidade)
+                    print(f"📊 [Chef {chef.id}] Pegou pedido {pedido_menor_complexidade.id} com complexidade total {sum(pedido_menor_complexidade.complexidades)} (SJF)")
                     return pedido_menor_complexidade
             time.sleep(0.05)  # Espera um pouco se a fila estiver vazia
 

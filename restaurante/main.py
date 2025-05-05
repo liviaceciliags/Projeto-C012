@@ -52,7 +52,7 @@ def main():
     # Criação de clientes
     clientes = [
         Cliente(i, restaurante, fila_chamados, fila_caixa, config) 
-        for i in range(1, 51)
+        for i in range(1, 10)
         ]
     
     # Inicia threads

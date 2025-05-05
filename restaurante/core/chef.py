@@ -43,7 +43,7 @@ class Chef(threading.Thread):
         """
         while self._ativo:
             try:
-                pedido = self.fila_pedidos.obter_proximo_pedido()
+                pedido = self.fila_pedidos.obter_proximo_pedido(self)
                 self._preparar_pedido(pedido)
             except:
                 break  # Encerra a execução em caso de erros
@@ -60,7 +60,6 @@ class Chef(threading.Thread):
         """
         self.estado = "PREPARANDO"
         pedido.estado = EstadoPedido.EM_PREPARO
-        print(f"📊 [Chef {self.id}] Pegou pedido {pedido.id} com complexidade total {sum(pedido.complexidades)} (SJF)")
         print(f"👨‍🍳 [Chef {self.id}] Preparando pedido {pedido.id}")
         
         # Simula o tempo de preparo usando o valor da configuração

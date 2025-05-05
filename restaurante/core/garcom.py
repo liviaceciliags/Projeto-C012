@@ -66,9 +66,7 @@ class Garcon(threading.Thread):
             
             # Interação com o cliente para obter o pedido
             pedido = cliente.fazer_pedido()
-            print(f"🧾 [Garçom {self.id}] Pedido {pedido.id} com complexidade total {sum(pedido.complexidades)}")
-            # print(f"📝 [Garçom {self.id}] Anotou pedido {pedido.id}")
-            self.fila_pedidos.adicionar_pedido(pedido)
+            self.fila_pedidos.adicionar_pedido(pedido, self)
             
             self.estado = "DISPONÍVEL"
         except Empty:
