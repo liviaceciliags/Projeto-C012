@@ -11,12 +11,12 @@ from restaurante.utils.filas import FilaPedidos, FilaPedidosProntos, FilaChamado
 def main():
     # Configuração
     config = ConfiguracaoRestaurante(
-        numeroMesas=5,
-        numeroGarcons=5,
-        numeroChefs=3,
-        numeroCaixas=2,
-        tempoPreparoPedido=2,
-        tempoComerCliente=0.3,
+        numeroMesas=3,
+        numeroGarcons=2,
+        numeroChefs=2,
+        numeroCaixas=1,
+        tempoPreparoPedido=0.1,
+        tempoComerCliente=0.05,
         tempoProcessamentoPagamento=0.05
     )
     print(f"🏨 Iniciando Restaurante com Configuração: {config}\n")
@@ -52,7 +52,7 @@ def main():
     # Criação de clientes
     clientes = [
         Cliente(i, restaurante, fila_chamados, fila_caixa, config) 
-        for i in range(1, 10)
+        for i in range(1, 6)
         ]
     
     # Inicia threads

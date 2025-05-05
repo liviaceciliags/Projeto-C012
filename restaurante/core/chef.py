@@ -63,7 +63,7 @@ class Chef(threading.Thread):
         print(f"👨‍🍳 [Chef {self.id}] Preparando pedido {pedido.id}")
         
         # Simula o tempo de preparo usando o valor da configuração
-        time.sleep(self.config.tempoPreparoPedido)
+        time.sleep(sum(pedido.complexidades) * self.config.tempoPreparoPedido)
         
         # Finaliza o pedido e move para a fila de prontos
         pedido.estado = EstadoPedido.PRONTO
