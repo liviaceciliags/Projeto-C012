@@ -17,11 +17,10 @@ class Fogao:
         """
         Tenta usar o fogão de forma não bloqueante.
         """
-        adquirido = self._semaforo.acquire(blocking=False)
-        if adquirido:
-            self._usuario_atual = chef
-            print(f"👨‍🍳 [Chef {chef.id}] conseguiu usar o fogão {self.id}.")
-        return adquirido
+        
+        self._usuario_atual = chef
+        print(f"👨‍🍳 [Chef {chef.id}] conseguiu usar o fogão {self.id}.")
+        return True
 
     def liberar(self, chef):
         """
@@ -29,4 +28,3 @@ class Fogao:
         """
         print(f"👨‍🍳 [Chef {chef.id}] liberou o fogão {self.id}.")
         self._usuario_atual = None
-        self._semaforo.release()
