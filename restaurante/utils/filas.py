@@ -7,7 +7,7 @@ import threading
 class FilaPedidos:
     def __init__(self):
         self._fila = []
-        self._lock = threading.Lock()  # <- adicionado lock
+        self._lock = threading.Lock()  # Protege acesso concorrente à fila
 
     def adicionar_pedido(self, pedido, garcom):
         with self._lock:
@@ -18,12 +18,11 @@ class FilaPedidos:
         while True:
             with self._lock:
                 if self._fila:
-                    # Pega o pedido de menor complexidade
-                    pedido_menor_complexidade = min(self._fila, key=lambda p: sum(p.complexidades))
-                    self._fila.remove(pedido_menor_complexidade)
-                    print(f"📊 [Chef {chef.id}] Pegou pedido {pedido_menor_complexidade.id} com complexidade total {sum(pedido_menor_complexidade.complexidades)} (SJF)")
-                    return pedido_menor_complexidade
-            time.sleep(0.05)  # Espera um pouco se a fila estiver vazia
+                    # Pega o pedido pela ordem de chegada (FCFS)
+                    pedido_fcfs = self._fila.pop(0)
+                    print(f"📊 [Chef {chef.id}] Pegou pedido {pedido_fcfs.id} com complexidade total {sum(pedido_fcfs.complexidades)} (FCFS)")
+                    return pedido_fcfs
+            time.sleep(0.05)  # Aguarda um breve intervalo se a fila estiver vazia
 
 class FilaPedidosProntos:
     """
