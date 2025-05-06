@@ -1,5 +1,7 @@
 import time
+import threading
 from restaurante.core.restaurante import Restaurante
+from restaurante.models.fogao import Fogao
 from restaurante.core.chef import Chef
 from restaurante.core.garcom import Garcon
 from restaurante.core.cliente import Cliente
@@ -8,19 +10,22 @@ from restaurante.models.configuracao import ConfiguracaoRestaurante
 from restaurante.utils.filas import FilaPedidos, FilaPedidosProntos, FilaChamados, FilaCaixa
 
 def main():
-    #Alterar o tempo de preparo de cada cliente
     # Configuração
     config = ConfiguracaoRestaurante(
         numeroMesas=5,
-        numeroGarcons=5,
+        numeroGarcons=3,
         numeroChefs=3,
         numeroCaixas=2,
-        tempoPreparoPedido=2,
-        tempoComerCliente=0.3,
-        tempoProcessamentoPagamento=0.05
+        tempoPreparoPedido=0.1,
+        tempoComerCliente=0.05,
+        tempoProcessamentoPagamento=0.05,
+        fogoes=2
     )
     print(f"🏨 Iniciando Restaurante com Configuração: {config}\n")
     
+    # 1 garçom entregando por vez
+    semaforo_entrega = threading.Semaphore(1) 
+
     # Criação das filas compartilhadas
     fila_chamados = FilaChamados()
     fila_pedidos = FilaPedidos()
@@ -30,16 +35,21 @@ def main():
     # Inicializa o restaurante com capacidade de gerenciar mesas
     restaurante = Restaurante(config)
     
+    fogoes = [
+        Fogao(i)
+        for i in range(1, config.fogoes + 1)
+    ]
+    
     # Cria funcionários
     chefs = [
-        Chef(i, fila_pedidos, fila_prontos, config) 
+        Chef(i, fila_pedidos, fila_prontos, fogoes, config) 
         for i in range(1, config.numeroChefs + 1)
         ]
     
     garcons = [
-        Garcon(i, fila_chamados, fila_pedidos, fila_prontos) 
+        Garcon(i, fila_chamados, fila_pedidos, fila_prontos, semaforo_entrega)
         for i in range(1, config.numeroGarcons + 1)
-        ]
+    ]
     
     caixa = [
         Caixa(i, fila_caixa, config) 
@@ -49,7 +59,7 @@ def main():
     # Criação de clientes
     clientes = [
         Cliente(i, restaurante, fila_chamados, fila_caixa, config) 
-        for i in range(1, 5)
+        for i in range(1, 11)
         ]
     
     # Inicia threads
@@ -61,6 +71,7 @@ def main():
 
     # Monitoramento
     for cl in clientes: cl.join()  # Aguarda término de todos clientes
+    
     
     # Encerra threads
     for c in chefs: c.parar()

@@ -18,7 +18,7 @@ class Chef(threading.Thread):
         _ativo (bool): Flag para controle da execução da thread
     """
     
-    def __init__(self, id: int, fila_pedidos, fila_prontos, config):
+    def __init__(self, id: int, fila_pedidos, fila_prontos, fogoes, config):
         """
         Inicializa o chef com suas configurações básicas
         
@@ -34,6 +34,7 @@ class Chef(threading.Thread):
         self.estado = "DISPONÍVEL"
         self.fila_pedidos = fila_pedidos
         self.fila_prontos = fila_prontos
+        self.fogoes = fogoes
         self._ativo = True  # Controla a execução contínua da thread
 
     def run(self):
@@ -43,7 +44,7 @@ class Chef(threading.Thread):
         """
         while self._ativo:
             try:
-                pedido = self.fila_pedidos.obter_proximo_pedido()
+                pedido = self.fila_pedidos.obter_proximo_pedido(self)
                 self._preparar_pedido(pedido)
             except:
                 break  # Encerra a execução em caso de erros
@@ -51,6 +52,7 @@ class Chef(threading.Thread):
     def _preparar_pedido(self, pedido):
         """
         Executa o processo de preparo de um pedido, incluindo:
+        - Busca de um fogão livre de forma circular
         - Atualização de estados
         - Simulação de tempo de preparo
         - Movimentação do pedido para a fila de prontos
@@ -58,18 +60,32 @@ class Chef(threading.Thread):
         Args:
             pedido: Objeto Pedido a ser preparado
         """
+        self.estado = "PROCURANDO_FOGAO"
+        total_fogoes = len(self.fogoes)
+        index = 0
+        fogao_usado = None
+        
+        # Tenta achar um fogão livre ciclicamente
+        while fogao_usado is None:
+            fogao = self.fogoes[index]
+            if fogao.tentar_usar(self):
+                fogao_usado = fogao
+            else:
+                index = (index + 1) % total_fogoes
+                time.sleep(0.01)  # evita busy‐wait intenso
+        
         self.estado = "PREPARANDO"
         pedido.estado = EstadoPedido.EM_PREPARO
-        print(f"📊 [Chef {self.id}] Pegou pedido {pedido.id} com complexidade total {sum(pedido.complexidades)} (SJF)")
         print(f"👨‍🍳 [Chef {self.id}] Preparando pedido {pedido.id}")
         
         # Simula o tempo de preparo usando o valor da configuração
-        time.sleep(self.config.tempoPreparoPedido)
+        time.sleep(sum(pedido.complexidades) * self.config.tempoPreparoPedido)
         
         # Finaliza o pedido e move para a fila de prontos
         pedido.estado = EstadoPedido.PRONTO
+        fogao_usado.liberar(self)
         self.fila_prontos.adicionar_pedido_pronto(pedido)
-        print(f"✅ [Chef {self.id}] Pedido {pedido.id} pronto")
+        print(f"✅ [Chef {self.id}] Pedido {pedido.id} pronto e fogão {fogao_usado.id} liberado")
         self.estado = "DISPONÍVEL"
 
     def parar(self):
